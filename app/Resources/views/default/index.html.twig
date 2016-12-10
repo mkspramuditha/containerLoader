@@ -25,25 +25,23 @@
             <label style="text-align: left" for="order">Add the order</label>
             <div class="row">
 
-               <div class="col-md-6">
+               <div class="col-md-6" id="item">
 
-                  <select class="form-control" id="exampleSelect2">
-                     <option value="20">20 ft</option>
-                     <option value="40">40 ft</option>
+                  <select  class="form-control tyreItem " name="items[]">
+                     {% for item in items %}
+                     <option value="{{ item.name }}">{{ item.name }}</option>
+                     {% endfor %}
                   </select>
 
                </div>
 
-               <div class="col-md-6">
-                  <select class="form-control" id="exampleSelect2">
-                     <option value="20">20 ft</option>
-                     <option value="40">40 ft</option>
-                  </select>
+               <div class="col-md-6" id="quantity">
+                  <input class="form-control" type="number" name="quantity[]">
                </div>
 
             </div>
             <div class="row" style="margin-top: 15px">
-               <button class="btn btn-info">Add Item</button>
+               <a class="btn btn-info" id="button">Add Item</a>
             </div>
 
 
@@ -54,6 +52,22 @@
       </div>
 
    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+   <script>
+       $('#button').click(function () {
+           $('#item').append("<input>")
+       })
+   </script>
+
+    <script type="text/javascript">
+        $(".tyreItem").select2();
+    </script>
+
 
 
 {% endblock %}

@@ -6,12 +6,14 @@
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('icon.png') }}" />
         <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/select2/select201ef.css?1422823373') }}">
     </head>
     <body>
         {% block body %}{% endblock %}
         {% block javascripts %}
         <script src="{{ asset('assets/jquery/jquery-1.11.0.min.js') }}"></script>
         <script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('assets/select2/select2.min.js') }}"></script>
         {% endblock %}
     </body>
 </html>

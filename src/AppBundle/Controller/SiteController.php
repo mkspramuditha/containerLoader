@@ -15,7 +15,9 @@ class SiteController extends DefaultController
      */
     public function indexAction(Request $request)
     {
-
-        return $this->render('default/index.html.twig');
+        $items = $this->getRepository('Tyres')->findAll();
+        return $this->render('default/index.html.twig',array(
+            'items'=>$items
+        ));
     }
 }

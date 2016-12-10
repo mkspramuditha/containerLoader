@@ -26,17 +26,20 @@
             <div class="row">
 
                <div class="col-md-6" id="item">
-
+                   <div class="form-group">
                   <select  class="form-control tyreItem " name="items[]">
                      {% for item in items %}
                      <option value="{{ item.name }}">{{ item.name }}</option>
                      {% endfor %}
                   </select>
+                   </div>
 
                </div>
 
                <div class="col-md-6" id="quantity">
-                  <input class="form-control" type="number" name="quantity[]">
+                   <div class="form-group">
+                        <input class="form-control" type="number" name="quantity[]">
+                   </div>
                </div>
 
             </div>
@@ -60,14 +63,16 @@
     {{ parent() }}
    <script>
        $('#button').click(function () {
-           var html='<select  class="form-control tyreItem " name="items[]">';
+           var htmlItem='<div class="form-group"> <select  class="form-control tyreItem " name="items[]">';
            {% for item in items %}
-            html +='<option value="'+'{{ item.name }}'+'">'+'{{ item.name }}'+'</option>';
+            htmlItem +='<option value="'+'{{ item.name }}'+'">'+'{{ item.name }}'+'</option>';
                    {% endfor %}
-           html+='</select'>
+           htmlItem+='</select></div>';
 
+           var htmlQuantity = '<div class="form-group"> <input class="form-control" type="number" name="quantity[]"></div>';
 
-           $('#item').append(html);
+           $('#item').append(htmlItem);
+           $('#quantity').append(htmlQuantity);
            $("select.tyreItem").select2("destroy").select2();
            $("select.tyreItem").select2();
 

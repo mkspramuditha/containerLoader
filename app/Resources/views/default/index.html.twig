@@ -23,32 +23,27 @@
             </div>
 
             <label style="text-align: left" for="order">Add the order</label>
-            <div class="row">
+            <div id="forms">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <select  class="form-control tyreItem " name="items[]">
+                                {% for item in items %}
+                                    <option value="{{ item.name }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <input class="form-control" type="number" name="quantity[]">
+                        </div>
 
-               <div class="col-md-6" id="item">
-                   <div class="form-group">
-                  <select  class="form-control tyreItem " name="items[]">
-                     {% for item in items %}
-                     <option value="{{ item.name }}">{{ item.name }}</option>
-                     {% endfor %}
-                  </select>
                    </div>
+                </div>
 
                </div>
-
-               <div class="col-md-6" id="quantity">
-                   <div class="form-group">
-                        <input class="form-control" type="number" name="quantity[]">
-                   </div>
-               </div>
-
-            </div>
             <div class="row" style="margin-top: 15px">
                <a class="btn btn-info" id="button">Add Item</a>
             </div>
-
-
-
          </form>
 
 
@@ -63,16 +58,16 @@
     {{ parent() }}
    <script>
        $('#button').click(function () {
-           var htmlItem='<div class="form-group"> <select  class="form-control tyreItem " name="items[]">';
+           var htmlItem='<div class="form-group"><div class="row"> <div class="col-md-6 col-sm-6"> <select  class="form-control tyreItem " name="items[]">';
            {% for item in items %}
             htmlItem +='<option value="'+'{{ item.name }}'+'">'+'{{ item.name }}'+'</option>';
                    {% endfor %}
            htmlItem+='</select></div>';
 
-           var htmlQuantity = '<div class="form-group"> <input class="form-control" type="number" name="quantity[]"></div>';
+           var htmlQuantity = '<div class="col-md-6 col-sm-6"> <input class="form-control" type="number" name="quantity[]"></div></div></div>';
+           var form = (htmlItem+htmlQuantity)
+           $('#forms').append(form);
 
-           $('#item').append(htmlItem);
-           $('#quantity').append(htmlQuantity);
            $("select.tyreItem").select2("destroy").select2();
            $("select.tyreItem").select2();
 

@@ -34,7 +34,7 @@
                             </select>
                         </div>
                         <div class="col-md-6 col-sm-6">
-                            <input class="form-control" type="number" name="quantity[]">
+                            <input class="form-control" required type="number" name="quantity[]">
                         </div>
 
                    </div>
@@ -69,7 +69,7 @@
                    {% endfor %}
            htmlItem+='</select></div>';
 
-           var htmlQuantity = '<div class="col-md-6 col-sm-6"> <input class="form-control" type="number" name="quantity[]"></div></div></div>';
+           var htmlQuantity = '<div class="col-md-6 col-sm-6"> <input class="form-control" required type="number" name="quantity[]"></div></div></div>';
            var form = (htmlItem+htmlQuantity)
            $('#forms').append(form);
 

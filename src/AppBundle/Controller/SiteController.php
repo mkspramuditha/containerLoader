@@ -15,6 +15,14 @@ class SiteController extends DefaultController
      */
     public function indexAction(Request $request)
     {
+        $orderItems = $request->get('items');
+        $orderQuantities = $request->get('quantity');
+        if($orderItems != null){
+            var_dump($orderItems);
+            var_dump($orderQuantities);
+            exit;
+        }
+
         $items = $this->getRepository('Tyres')->findAll();
         return $this->render('default/index.html.twig',array(
             'items'=>$items

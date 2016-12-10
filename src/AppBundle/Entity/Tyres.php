@@ -28,16 +28,7 @@ class Tyres
      */
     private $name;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255)
-     */
-    private $description;
-
-
-
-    /**
+   /**
      * @var string
      *
      * @ORM\Column(name="volume", type="float", length=255)
@@ -103,26 +94,5 @@ class Tyres
         return $this->volume;
     }
 
-    /**
-     * Set description
-     *
-     * @param string $description
-     * @return Tyres
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
 
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string 
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
 }

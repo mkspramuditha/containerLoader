@@ -60,7 +60,15 @@
     {{ parent() }}
    <script>
        $('#button').click(function () {
-           $('#item').append("<input>")
+           var html='<select  class="form-control tyreItem " name="items[]">';
+           {% for item in items %}
+            html +='<option value="'+'{{ item.name }}'+'">'+'{{ item.name }}'+'</option>';
+                   {% endfor %}
+           html+='</select'>
+
+
+           $('#item').append(html);
+           $(".tyreItem").select2();
        })
    </script>
 

@@ -68,12 +68,18 @@
 
 
            $('#item').append(html);
-           $(".tyreItem").select2();
+           $("select.tyreItem").select2("destroy").select2();
+           $("select.tyreItem").select2();
+
        })
    </script>
 
+
     <script type="text/javascript">
-        $(".tyreItem").select2();
+        $(document).ready(function () {
+            $(".tyreItem").select2();
+        });
+
     </script>
 
 

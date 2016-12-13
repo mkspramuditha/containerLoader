@@ -37,6 +37,22 @@ class Tyres
 
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="od", type="float", length=255)
+     */
+    private $od;
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="width", type="float", length=255)
+     */
+    private $width;
+
+
+    /**
      * Get id
      *
      * @return integer 

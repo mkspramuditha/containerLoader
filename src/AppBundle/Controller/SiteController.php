@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Tyres;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use PHPExcel_IOFactory;
@@ -48,17 +49,29 @@ class SiteController extends DefaultController
         $sheet = $objPHPExcel->getSheet(0);
         $highestRow = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
+        $em = $this->getDoctrine()->getManager();
+
 
         for ($row = 2; $row <= $highestRow; $row++){
 
             $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE);
-            foreach ($rowData as $row){
-                var_dump($row."  ");
-            }
-            var_dump("\n");
+
+            $name = $rowData[0][0];
+            $od = $rowData[0][1];
+            $width = $rowData[0][2];
+//            var_dump($name);
+//            var_dump($od);
+//            var_dump($width);
+            $tyre = new Tyres();
+            $tyre->setName($name);
+            $tyre->setOd($od);
+            $tyre->setWidth($width);
+            $tyre->setVolume($od*$od*$width);
+
+            $em->persist($tyre);
 
         }
-
+        $em->flush();
         return new Response('Hi');
 
     }

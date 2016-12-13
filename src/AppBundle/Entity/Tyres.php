@@ -37,6 +37,22 @@ class Tyres
 
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="od", type="float", length=255)
+     */
+    private $od;
+
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="width", type="float", length=255)
+     */
+    private $width;
+
+
+    /**
      * Get id
      *
      * @return integer 
@@ -95,4 +111,50 @@ class Tyres
     }
 
 
+
+    /**
+     * Set od
+     *
+     * @param float $od
+     * @return Tyres
+     */
+    public function setOd($od)
+    {
+        $this->od = $od;
+
+        return $this;
+    }
+
+    /**
+     * Get od
+     *
+     * @return float 
+     */
+    public function getOd()
+    {
+        return $this->od;
+    }
+
+    /**
+     * Set width
+     *
+     * @param float $width
+     * @return Tyres
+     */
+    public function setWidth($width)
+    {
+        $this->width = $width;
+
+        return $this;
+    }
+
+    /**
+     * Get width
+     *
+     * @return float 
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
 }

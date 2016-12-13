@@ -31,11 +31,15 @@ class SiteController extends DefaultController
             }
             $size = 0;
             if($containerSize == '20'){
-                $size = 5.9*2.35*2.393*1000000;
+//                var_dump('20');
+                $size = 5.9*2.35*2.393*1000000000;
             }
             else if($containerSize == '40'){
-                $size = 12.036*2.350*2.392*1000000;
+//                var_dump('40');
+                $size = 12.036*2.350*2.392*1000000000;
             }
+//            var_dump($total);
+//            var_dump($size);
             $containerCount = ceil($total/(float)$size);
 
             return $this->render('default/result.html.twig',array(

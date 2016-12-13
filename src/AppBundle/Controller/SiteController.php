@@ -21,10 +21,26 @@ class SiteController extends DefaultController
     {
         $orderItems = $request->get('items');
         $orderQuantities = $request->get('quantity');
+        $containerSize = $request->get('container');
         if($orderItems != null){
-            var_dump($orderItems);
-            var_dump($orderQuantities);
-            exit;
+//            var_dump('shan');
+//            exit;
+            $total = 0;
+            foreach($orderItems as $key=>$value) {
+                $total+= (float)$value * (float)$orderQuantities[$key];
+            }
+            $size = 0;
+            if($containerSize == '20'){
+                $size = 5.9*2.35*2.393*1000000;
+            }
+            else if($containerSize == '40'){
+                $size = 12.036*2.350*2.392*1000000;
+            }
+            $containerCount = ceil($total/(float)$size);
+
+            return $this->render('default/result.html.twig',array(
+               'result'=>$containerCount
+            ));
         }
 
         $items = $this->getRepository('Tyres')->findAll();

@@ -26,15 +26,15 @@
             <div id="forms">
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6 col-sm-6">
-                            <select  class="form-control tyreItem " name="items[]">
+                        <div class="col-md-4 col-sm-6">
+                            <select  class="form-control input-sm tyreItem " name="items[]">
                                 {% for item in items %}
                                     <option value="{{ item.name }}">{{ item.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-6 col-sm-6">
-                            <input class="form-control" required type="number" name="quantity[]">
+                        <div class="col-md-4 col-sm-6">
+                            <input class="form-control input-sm" required type="number" name="quantity[]">
                         </div>
 
                    </div>
@@ -63,13 +63,13 @@
     {{ parent() }}
    <script>
        $('#button').click(function () {
-           var htmlItem='<div class="form-group"><div class="row"> <div class="col-md-6 col-sm-6"> <select  class="form-control tyreItem " name="items[]">';
+           var htmlItem='<div class="form-group"><div class="row"> <div class="col-md-4 col-sm-6"> <select  class="form-control input-sm tyreItem " name="items[]">';
            {% for item in items %}
             htmlItem +='<option value="'+'{{ item.name }}'+'">'+'{{ item.name }}'+'</option>';
                    {% endfor %}
            htmlItem+='</select></div>';
 
-           var htmlQuantity = '<div class="col-md-6 col-sm-6"> <input class="form-control" required type="number" name="quantity[]"></div></div></div>';
+           var htmlQuantity = '<div class="col-md-4 col-sm-6"> <input class="form-control input-sm" required type="number" name="quantity[]"></div></div></div>';
            var form = (htmlItem+htmlQuantity)
            $('#forms').append(form);
 

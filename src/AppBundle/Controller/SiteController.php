@@ -20,7 +20,9 @@ class SiteController extends DefaultController
     public function indexAction(Request $request)
     {
         $orderItems = $request->get('items');
+//        var_dump($orderItems);
         $orderQuantities = $request->get('quantity');
+//        var_dump($orderQuantities);
         $containerSize = $request->get('container');
         if($orderItems != null){
 //            var_dump('shan');

@@ -3,6 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Tyres;
+use AppBundle\Packer\TestBox;
+use AppBundle\Packer\TestItem;
+use DVDoug\BoxPacker\ItemList;
+use DVDoug\BoxPacker\Packer;
+//use DVDoug\BoxPacker\TestBox;
+//use DVDoug\BoxPacker\TestItem;
+use DVDoug\BoxPacker\VolumePacker;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use PHPExcel_IOFactory;
@@ -19,6 +26,7 @@ class SiteController extends DefaultController
      */
     public function indexAction(Request $request)
     {
+
         $orderItems = $request->get('items');
 //        var_dump($orderItems);
         $orderQuantities = $request->get('quantity');
@@ -95,6 +103,60 @@ class SiteController extends DefaultController
         }
         $em->flush();
         return new Response('Hi');
+
+    }
+
+
+    /**
+     * @Route("/test", name="test")
+     */
+
+    public function testAction(Request $request){
+        /*
+   * To figure out which boxes you need, and which items go into which box
+   */
+        $packer = new Packer();
+
+//        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
+        $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
+        for($i = 0; $i<1000; $i++){
+            $packer->addItem(new TestItem('item'.$i,250,250,2,200,true));
+        }
+//        $packer->addItem(new TestItem('Item 1', 250, 250, 2, 200, true));
+//        $packer->addItem(new TestItem('Item 2', 250, 250, 2, 200, true));
+//        $packer->addItem(new TestItem('Item 3', 250, 250, 2, 200, true));
+        $packedBoxes = $packer->pack();
+//
+        echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
+        foreach ($packedBoxes as $packedBox) {
+            $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
+            echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
+            echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
+
+            echo("The items in this box are:" . PHP_EOL);
+            $itemsInTheBox = $packedBox->getItems();
+//            foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
+//                echo($item->getDescription() . PHP_EOL);
+//            }
+
+            echo(PHP_EOL);
+        }
+
+
+
+        /*
+         * To just see if a selection of items will fit into one specific box
+         */
+        $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+
+        $items = new ItemList();
+        $items->insert(new TestItem('Item 1', 297, 296, 2, 200, true));
+        $items->insert(new TestItem('Item 2', 297, 296, 2, 500, true));
+        $items->insert(new TestItem('Item 3', 296, 296, 4, 290, true));
+
+        $volumePacker = new VolumePacker($box, $items);
+        $packedBox = $volumePacker->pack();
+        /* $packedBox->getItems() contains the items that fit */
 
     }
 }

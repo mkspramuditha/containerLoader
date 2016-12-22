@@ -194,6 +194,7 @@ class SiteController extends DefaultController
 //
             echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
             foreach ($packedBoxes as $packedBox) {
+                echo("<br>");
                 $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
                 echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
                 echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
@@ -205,6 +206,7 @@ class SiteController extends DefaultController
             }
 
                 echo(PHP_EOL);
+                echo("<br>");
             }
 
 

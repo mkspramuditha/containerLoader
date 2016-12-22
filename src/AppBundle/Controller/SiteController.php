@@ -28,28 +28,27 @@ class SiteController extends DefaultController
     {
 
         $orderItems = $request->get('items');
-//        var_dump($orderItems);
         $orderQuantities = $request->get('quantity');
-//        var_dump($orderQuantities);
         $containerSize = $request->get('container');
+
+
+
         if($orderItems != null){
-//            var_dump('shan');
-//            exit;
+            $this->packing($orderItems,$orderQuantities);
+
+
             $total = 0;
             foreach($orderItems as $key=>$value) {
                 $total+= (float)$value * (float)$orderQuantities[$key];
             }
             $size = 0;
             if($containerSize == '20'){
-//                var_dump('20');
                 $size = 5.9*2.35*2.393*1000000000;
             }
             else if($containerSize == '40'){
-//                var_dump('40');
                 $size = 12.036*2.350*2.392*1000000000;
             }
-//            var_dump($total);
-//            var_dump($size);
+
             $containerCount = ceil($total/(float)$size);
 
             return $this->render('default/result.html.twig',array(
@@ -117,7 +116,7 @@ class SiteController extends DefaultController
    */
         $packer = new Packer();
 
-//        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
+        $packer->addBox(new TestBox('Le petite box', 300, 300, 10, 10, 296, 296, 8, 1000));
         $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
         for($i = 0; $i<1000; $i++){
             $packer->addItem(new TestItem('item'.$i,250,250,2,200,true));
@@ -128,35 +127,102 @@ class SiteController extends DefaultController
         $packedBoxes = $packer->pack();
 //
         echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
-        foreach ($packedBoxes as $packedBox) {
-            $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
-            echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
-            echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
-
-            echo("The items in this box are:" . PHP_EOL);
-            $itemsInTheBox = $packedBox->getItems();
-//            foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
-//                echo($item->getDescription() . PHP_EOL);
-//            }
-
-            echo(PHP_EOL);
-        }
+//        foreach ($packedBoxes as $packedBox) {
+//            $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
+//            echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
+//            echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
+//
+//            echo("The items in this box are:" . PHP_EOL);
+//            $itemsInTheBox = $packedBox->getItems();
+////            foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
+////                echo($item->getDescription() . PHP_EOL);
+////            }
+//
+//            echo(PHP_EOL);
+//        }
 
 
 
         /*
          * To just see if a selection of items will fit into one specific box
          */
-        $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
-
-        $items = new ItemList();
-        $items->insert(new TestItem('Item 1', 297, 296, 2, 200, true));
-        $items->insert(new TestItem('Item 2', 297, 296, 2, 500, true));
-        $items->insert(new TestItem('Item 3', 296, 296, 4, 290, true));
-
-        $volumePacker = new VolumePacker($box, $items);
-        $packedBox = $volumePacker->pack();
+//        $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+//
+//        $items = new ItemList();
+//        $items->insert(new TestItem('Item 1', 297, 296, 2, 200, true));
+//        $items->insert(new TestItem('Item 2', 297, 296, 2, 500, true));
+//        $items->insert(new TestItem('Item 3', 296, 296, 4, 290, true));
+//
+//        $volumePacker = new VolumePacker($box, $items);
+//        $packedBox = $volumePacker->pack();
         /* $packedBox->getItems() contains the items that fit */
+
+    }
+
+    public function packing($items , $quantity){
+
+        $objectArray = [];
+
+        if($items!== null){
+            foreach ($items as $key=>$value){
+//                var_dump($value);
+                $objectArray[] = $this->getRepository('Tyres')->findOneBy(array('name'=>$value));
+            }
+
+//            var_dump(count($objectArray));
+//            var_dump($objectArray);
+
+//            var_dump($objectArray[0]->getName());
+//            exit;
+            $packer = new Packer();
+
+        $packer->addBox(new TestBox('40ft container', 2350, 12036, 2392, 0, 2350, 12036, 2392, 1));
+//            $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
+//            for($i = 0; $i<1000; $i++){
+//                $packer->addItem(new TestItem('item'.$i,250,250,2,200,true));
+//            }
+
+            foreach ($objectArray as $key=>$value){
+                for($i = 0;$i<(int)$quantity[$key];$i++)
+                {
+                    $packer->addItem(new TestItem($value->getName(),$value->getOd(),$value->getOd(),$value->getWidth(),0,true));
+
+                }
+            }
+
+            $packedBoxes = $packer->pack();
+//
+            echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
+            foreach ($packedBoxes as $packedBox) {
+                $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
+                echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
+                echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
+
+                echo("The items in this box are:" . PHP_EOL);
+                $itemsInTheBox = $packedBox->getItems();
+            foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
+                echo($item->getDescription() . PHP_EOL);
+            }
+
+                echo(PHP_EOL);
+            }
+
+
+
+
+//            $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+//
+//            $items = new ItemList();
+//            $items->insert(new TestItem('Item 1', 297, 296, 2, 200, true));
+//            $items->insert(new TestItem('Item 2', 297, 296, 2, 500, true));
+//            $items->insert(new TestItem('Item 3', 296, 296, 4, 290, true));
+//
+//            $volumePacker = new VolumePacker($box, $items);
+//            $packedBox = $volumePacker->pack();
+            /* $packedBox->getItems() contains the items that fit */
+
+
+        }
 
     }
 }

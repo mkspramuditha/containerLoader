@@ -200,10 +200,22 @@ class SiteController extends DefaultController
                 echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
 
                 echo("The items in this box are:" . PHP_EOL);
+                echo("<br>");
                 $itemsInTheBox = $packedBox->getItems();
+//                var_dump(gettype($itemsInTheBox));
+//                exit;
+//                array_count_values($itemsInTheBox);
+                $countItems = [];
             foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
-                echo($item->getDescription() . PHP_EOL);
+                $countItems[] = $item->getDescription();
             }
+            $array = array_count_values($countItems);
+
+            foreach ($array as $key=>$value){
+                echo($key . " - " . $value);
+                echo("<br>");
+            }
+
 
                 echo(PHP_EOL);
                 echo("<br>");

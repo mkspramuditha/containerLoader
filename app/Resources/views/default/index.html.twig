@@ -26,7 +26,7 @@
             <div id="forms">
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-2 col-sm-6">
                             <select  class="form-control input-sm tyreItem " name="items[]">
                                 {% for item in items %}
                                     <option value="{{ item.name }}">{{ item.name }}</option>
@@ -39,19 +39,30 @@
                         <div class="col-md-2 col-sm-6">
                             <input class="form-control input-sm" placeholder="Pallet count"  type="number" name="palletQuanity[]">
                         </div>
-                        <div class="col-md-3 col-sm-6">
-                            <select  class="form-control input-sm palletItem " name="pallet[]">
+                        {#<div class="col-md-2 col-sm-6">#}
+                            {#<select  class="form-control input-sm palletItem " name="pallet[]">#}
                                 {% for item in items %}
-                                    <option value="{{ item.name }}">{{ item.name }}</option>
+                                    {#<option value="1200">1200 x 800 </option>#}
+                                    {#<option value="1000">1000 x 800</option>#}
+                                    {#<option value="1016">40 x 40</option>#}
+                                    {#<option value="812.8">32 x 32</option>#}
                                 {% endfor %}
-                            </select>
-                        </div>
+                            {#</select>#}
+                        {#</div>#}
 
                         <div class="col-md-2 col-sm-6">
                             <select  class="form-control input-sm country " name="country[]">
-                                {% for item in items %}
-                                    <option value="{{ item.name }}">{{ item.name }}</option>
-                                {% endfor %}
+                                {#{% for item in items %}#}
+                                    <option value="std">Standard</option>
+                                    <option value="itl">Italy</option>
+                                    <option value="usa">USA</option>
+                                {#{% endfor %}#}
+                            </select>
+                        </div>
+                        <div class="col-md-2 col-sm-6">
+                            <select class="form-control input-sm valueType" name="palletValue[]">
+                                <option value="0">Lower</option>
+                                <option value="1">Upper</option>
                             </select>
                         </div>
 
@@ -81,7 +92,7 @@
     {{ parent() }}
    <script>
        $('#button').click(function () {
-           var htmlItem='<div class="form-group"><div class="row"> <div class="col-md-3 col-sm-6"> <select  class="form-control input-sm tyreItem " name="items[]">';
+           var htmlItem='<div class="form-group"><div class="row"> <div class="col-md-2 col-sm-6"> <select  class="form-control input-sm tyreItem " name="items[]">';
            {% for item in items %}
             htmlItem +='<option value="'+'{{ item.name }}'+'">'+'{{ item.name }}'+'</option>';
                    {% endfor %}
@@ -89,10 +100,12 @@
 
            var htmlQuantity = '<div class="col-md-2 col-sm-6"> <input class="form-control input-sm" placeholder="quantity" required type="number" name="quantity[]"></div><div class="col-md-2 col-sm-6"><input class="form-control input-sm" placeholder="Pallet count"  type="number" name="palletQuanity[]"></div>';
 
-           var htmlPallet;
-           var htmlCountry;
+           var htmlPallet = '<div class="col-md-2 col-sm-6"> <select  class="form-control input-sm palletItem " name="pallet[]"> <option value="1200">1200 x 800 </option> <option value="1000">1000 x 800</option> <option value="1016">40 x 40</option> <option value="812.8">32 x 32</option> </select></div>';
+           var htmlCountry = '<div class="col-md-2 col-sm-6"> <select  class="form-control input-sm country " name="country[]"> <option value="std">Standard</option> <option value="itl">Italy</option> <option value="usa">USA</option> </select> </div>';
 
-           var form = (htmlItem+htmlQuantity+'</div></div>');
+           var htmlPalletValue = '<div class="col-md-2 col-sm-6"> <select class="form-control input-sm valueType" name="palletValue[]"> <option value="1">Upper</option> <option value="0">Lower</option> </select> </div>';
+
+           var form = (htmlItem+htmlQuantity+htmlCountry+htmlPalletValue+'</div></div>');
            $('#forms').append(form);
 
 //       $("select.tyreItem").select2("destroy").select2();

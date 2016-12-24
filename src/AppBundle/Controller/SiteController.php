@@ -30,12 +30,16 @@ class SiteController extends DefaultController
 
         $orderItems = $request->get('items');
         $orderQuantities = $request->get('quantity');
+        $palletCount = $request->get('palletQuanity');
+        $country = $request->get('country');
+        $palletValue = $request->get('palletValue');
+
         $containerSize = $request->get('container');
 
 
 
         if($orderItems != null){
-            $this->packing($orderItems,$orderQuantities);
+            $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue);
 
 
             $total = 0;
@@ -135,16 +139,42 @@ class SiteController extends DefaultController
             $tyre = $rowData[0][0];
             $description = $rowData[0][1];
             $standardSize = explode("x", $rowData[0][2]);
-            $standardLength = $standardSize[0];
-            $standardWidth = $standardSize[1];
+            if(count($standardSize) == 2){
+                $standardLength = $standardSize[0];
+                $standardWidth = $standardSize[1];
+            }
+            else{
+                $standardLength = 0;
+                $standardWidth = 0;
+            }
+
             $standardQuantity = $rowData[0][3];
             $italySize = explode("x", $rowData[0][4]);
-            $italyLength = $italySize[0];
-            $italyWidth = $italySize[1];
+            if(count($italySize) == 2){
+                $italyLength = $italySize[0];
+                $italyWidth = $italySize[1];
+            }
+            else{
+                $italyLength = 0;
+                $italyWidth = 0;
+            }
+
             $italyQuantity = $rowData[0][5];
             $usaSize = explode("x", $rowData[0][6]);
-            $usaLength = $usaSize[0];
-            $usaWidth = $usaSize[1];
+//            var_dump($usaSize);
+//            $str = "12";
+//            var_dump(explode("&",$str));
+//            exit;
+            if(count($usaSize) == 2){
+                $usaLength = $usaSize[0];
+                $usaWidth = $usaSize[1];
+            }
+            else{
+                $usaLength = 0;
+                $usaWidth = 0;
+            }
+
+
             $usaQuantity = $rowData[0][7];
 //            var_dump($name);
 //            var_dump($od);
@@ -228,7 +258,7 @@ class SiteController extends DefaultController
 
     }
 
-    public function packing($items , $quantity){
+    public function packing($items , $quantity, $palletCount, $country, $palletValue){
 
         $objectArray = [];
 
@@ -252,7 +282,45 @@ class SiteController extends DefaultController
 //            }
 
             foreach ($objectArray as $key=>$value){
-                for($i = 0;$i<(int)$quantity[$key];$i++)
+                $palletObj = $this->getRepository('TyrePallet')->findOneBy(array('tyre'=>$value->getName()));
+                $palletCount = $palletCount[$key];
+                $palletCountry = $country[$key];
+                $length = 0;
+                $width = 0;
+                $height = 1000;
+                $tyreCount = 0;
+                if($palletCountry == "std"){
+                    $length = $palletObj->getStandardLength();
+                    $width = $palletObj->getStandardWidth();
+                    $tyreCount = $palletObj->getStandardQuantity();
+                }
+                elseif ($palletCountry == "itl"){
+                    $length = $palletObj->getItalyLength();
+                    $width = $palletObj->getItalyWidth();
+                    $tyreCount = $palletObj->getItalyQuantity();
+                }
+                elseif ($palletCountry == "usa"){
+                    $length = $palletObj->getUsaLength();
+                    $width = $palletObj->getUsaWidth();
+                    $tyreCount = $palletObj->getUsaQuantity();
+                }
+//                var_dump($length);
+//                var_dump($tyreCount);
+//                var_dump($palletValue[$key]);
+//                exit;
+                if($palletValue[$key] == "1"){
+                    $tyreCount = (int) explode("&",$tyreCount)[1];
+                }else{
+                    $tyreCount = (int) explode("&",$tyreCount)[0];
+                }
+//                var_dump($tyreCount);
+                if($tyreCount !== 0) {
+                    for ($j = 0; $j < (int)$palletCount; $j++) {
+                        $packer->addItem(new TestItem($palletObj->getDescription()." ".$value->getName(), $length, $width, $height, 0, true));
+                    }
+                }
+
+                for($i = 0;$i<((int)$quantity[$key]-((int)$palletCount*$tyreCount)) ;$i++)
                 {
                     $packer->addItem(new TestItem($value->getName(),$value->getOd(),$value->getOd(),$value->getWidth(),0,true));
 

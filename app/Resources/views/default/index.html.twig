@@ -33,11 +33,26 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-2 col-sm-6">
                             <input class="form-control input-sm" placeholder="quantity" required type="number" name="quantity[]">
                         </div>
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-2 col-sm-6">
                             <input class="form-control input-sm" placeholder="Pallet count"  type="number" name="palletQuanity[]">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <select  class="form-control input-sm palletItem " name="pallet[]">
+                                {% for item in items %}
+                                    <option value="{{ item.name }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 col-sm-6">
+                            <select  class="form-control input-sm country " name="country[]">
+                                {% for item in items %}
+                                    <option value="{{ item.name }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
 
                    </div>
@@ -72,8 +87,12 @@
                    {% endfor %}
            htmlItem+='</select></div>';
 
-           var htmlQuantity = '<div class="col-md-3 col-sm-6"> <input class="form-control input-sm" placeholder="quantity" required type="number" name="quantity[]"></div><div class="col-md-3 col-sm-6"><input class="form-control input-sm" placeholder="Pallet count"  type="number" name="palletQuanity[]"></div></div></div>';
-           var form = (htmlItem+htmlQuantity);
+           var htmlQuantity = '<div class="col-md-2 col-sm-6"> <input class="form-control input-sm" placeholder="quantity" required type="number" name="quantity[]"></div><div class="col-md-2 col-sm-6"><input class="form-control input-sm" placeholder="Pallet count"  type="number" name="palletQuanity[]"></div>';
+
+           var htmlPallet;
+           var htmlCountry;
+
+           var form = (htmlItem+htmlQuantity+'</div></div>');
            $('#forms').append(form);
 
 //       $("select.tyreItem").select2("destroy").select2();

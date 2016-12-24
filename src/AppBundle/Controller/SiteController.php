@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\TyrePallet;
 use AppBundle\Entity\Tyres;
 use AppBundle\Packer\TestBox;
 use AppBundle\Packer\TestItem;
@@ -105,6 +106,74 @@ class SiteController extends DefaultController
 
     }
 
+
+
+    /**
+     * @Route("/excel/pallet", name="uploadExcelPallet")
+     */
+
+    public function palletExcel(Request $request){
+        $inputFileName = ($this->get('kernel')->getRootDir() .'/../web/upload/pallet.xlsx');;
+        try {
+            $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($inputFileName);
+        } catch(Exception $e) {
+            die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+        }
+
+        $sheet = $objPHPExcel->getSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+        $em = $this->getDoctrine()->getManager();
+
+
+        for ($row = 2; $row <= $highestRow; $row++){
+
+            $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE);
+
+            $tyre = $rowData[0][0];
+            $description = $rowData[0][1];
+            $standardSize = explode("x", $rowData[0][2]);
+            $standardLength = $standardSize[0];
+            $standardWidth = $standardSize[1];
+            $standardQuantity = $rowData[0][3];
+            $italySize = explode("x", $rowData[0][4]);
+            $italyLength = $italySize[0];
+            $italyWidth = $italySize[1];
+            $italyQuantity = $rowData[0][5];
+            $usaSize = explode("x", $rowData[0][6]);
+            $usaLength = $usaSize[0];
+            $usaWidth = $usaSize[1];
+            $usaQuantity = $rowData[0][7];
+//            var_dump($name);
+//            var_dump($od);
+//            var_dump($width);
+//            $tyre = new Tyres();
+//            $tyre->setName($name);
+//            $tyre->setOd($od);
+//            $tyre->setWidth($width);
+//            $tyre->setVolume($od*$od*$width);
+
+            $tyrePallet = new TyrePallet();
+            $tyrePallet->setTyre($tyre);
+            $tyrePallet->setDescription($description);
+            $tyrePallet->setStandardLength($standardLength);
+            $tyrePallet->setStandardWidth($standardWidth);
+            $tyrePallet->setStandardQuantity($standardQuantity);
+            $tyrePallet->setItalyLength($italyLength);
+            $tyrePallet->setItalyWidth($italyWidth);
+            $tyrePallet->setItalyQuantity($italyQuantity);
+            $tyrePallet->setUsaLength($usaLength);
+            $tyrePallet->setUsaWidth($usaWidth);
+            $tyrePallet->setUsaQuantity($usaQuantity);
+
+            $em->persist($tyrePallet);
+
+        }
+        $em->flush();
+        return new Response('Done Uploading');
+    }
 
     /**
      * @Route("/test", name="test")

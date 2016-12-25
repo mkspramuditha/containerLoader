@@ -41,7 +41,7 @@ class SiteController extends DefaultController
 
 
         if($orderItems != null){
-            $packedBoxes = $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue) ;
+            $packedBoxes = $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue,$containerSize) ;
 
             $test = clone $packedBoxes;
             $itemInContainer = [];
@@ -276,7 +276,7 @@ class SiteController extends DefaultController
 
     }
 
-    public function packing($items , $quantity, $palletCounts, $country, $palletValue){
+    public function packing($items , $quantity, $palletCounts, $country, $palletValue,$container){
 //        var_dump($palletCounts);
         $objectArray = [];
 
@@ -286,24 +286,23 @@ class SiteController extends DefaultController
                 $objectArray[] = $this->getRepository('Tyres')->findOneBy(array('name'=>$value));
             }
 
-//            var_dump(count($objectArray));
-//            var_dump($objectArray);
 
-//            var_dump($objectArray[0]->getName());
-//            exit;
             $packer = new Packer();
 
-        $packer->addBox(new TestBox('40ft container', 2350, 12036, 2392, 0, 2350, 12036, 2392, 1));
-//            $packer->addBox(new TestBox('Le grande box', 3000, 3000, 100, 100, 2960, 2960, 80, 10000));
-//            for($i = 0; $i<1000; $i++){
-//                $packer->addItem(new TestItem('item'.$i,250,250,2,200,true));
-//            }
+            if($container == "20"){
+                $packer->addBox(new TestBox('20ft container', 2350, 5900, 2393, 0, 2350, 12036, 2392, 1));
+            }
+            elseif ($container == "40"){
+                $packer->addBox(new TestBox('40ft container', 2350, 12036, 2392, 0, 2350, 12036, 2392, 1));
+
+            }
+
+
 
             foreach ($objectArray as $key=>$value){
                 $palletObj = $this->getRepository('TyrePallet')->findOneBy(array('tyre'=>$value->getName()));
                 $palletCount = $palletCounts[$key];
-//                var_dump($palletCounts);
-//                exit;
+
                 $palletCountry = $country[$key];
                 $length = 0;
                 $width = 0;
@@ -323,10 +322,7 @@ class SiteController extends DefaultController
                         $width = $palletObj->getUsaWidth();
                         $tyreCount = $palletObj->getUsaQuantity();
                     }
-//                var_dump($length);
-//                var_dump($tyreCount);
-//                var_dump($palletValue[$key]);
-//                exit;
+
                     if ($palletValue[$key] == "1") {
                         if(count(explode("&", $tyreCount)) ==2) {
                             $tyreCount = (int)explode("&", $tyreCount)[1];
@@ -337,7 +333,7 @@ class SiteController extends DefaultController
                     } else {
                         $tyreCount = (int)explode("&", $tyreCount)[0];
                     }
-//                var_dump($tyreCount);
+
                     if ($tyreCount !== 0) {
                         for ($j = 0; $j < (int)$palletCount; $j++) {
                             $packer->addItem(new TestItem($palletObj->getDescription() . " " . $value->getName(), $length, $width, $height, 0, true));
@@ -356,49 +352,7 @@ class SiteController extends DefaultController
             }
 
             $packedBoxes = $packer->pack();
-//            $boxDetails = $packedBoxes;
-//            var_dump(count($packedBoxes));
-//            $test = $packer->pack();
-            $itemInContainer = [];
 
-//            echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
-            /*
-            foreach ($boxDetails as $packedBox) {
-//                echo("<br>");
-                $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
-//                echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
-//                echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
-//
-//                echo("The items in this box are:" . PHP_EOL);
-//                echo("<br>");
-                $itemsInTheBox = $packedBox->getItems();
-//                var_dump(gettype($itemsInTheBox));
-//                exit;
-//                array_count_values($itemsInTheBox);
-                $countItems = [];
-            foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
-                $countItems[] = $item->getDescription();
-            }
-            $array = array_count_values($countItems);
-            $temp = [];
-            foreach ($array as $key=>$value){
-                $temp[$key] = $value;
-//                echo($key . " - " . $value);
-//                echo("<br>");
-            }
-            $itemInContainer[] = $temp;
-//
-//                echo(PHP_EOL);
-//                echo("<br>");
-            } */
-
-//            foreach ($boxDetails as $row){
-//
-//            }
-
-
-
-//            var_dump(count($boxDetails));
             return $packedBoxes;
         }
 

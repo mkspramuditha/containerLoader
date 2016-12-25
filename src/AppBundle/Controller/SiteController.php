@@ -39,25 +39,25 @@ class SiteController extends DefaultController
 
 
         if($orderItems != null){
-            $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue);
+            $packedBoxes = $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue);
 
 
-            $total = 0;
-            foreach($orderItems as $key=>$value) {
-                $total+= (float)$value * (float)$orderQuantities[$key];
-            }
-            $size = 0;
-            if($containerSize == '20'){
-                $size = 5.9*2.35*2.393*1000000000;
-            }
-            else if($containerSize == '40'){
-                $size = 12.036*2.350*2.392*1000000000;
-            }
-
-            $containerCount = ceil($total/(float)$size);
+//            $total = 0;
+//            foreach($orderItems as $key=>$value) {
+//                $total+= (float)$value * (float)$orderQuantities[$key];
+//            }
+//            $size = 0;
+//            if($containerSize == '20'){
+//                $size = 5.9*2.35*2.393*1000000000;
+//            }
+//            else if($containerSize == '40'){
+//                $size = 12.036*2.350*2.392*1000000000;
+//            }
+//
+//            $containerCount = ceil($total/(float)$size);
 
             return $this->render('default/result.html.twig',array(
-               'result'=>$containerCount
+               'packedBoxes'=>$packedBoxes
             ));
         }
 
@@ -289,35 +289,38 @@ class SiteController extends DefaultController
                 $width = 0;
                 $height = 1000;
                 $tyreCount = 0;
-                if($palletCountry == "std"){
-                    $length = $palletObj->getStandardLength();
-                    $width = $palletObj->getStandardWidth();
-                    $tyreCount = $palletObj->getStandardQuantity();
-                }
-                elseif ($palletCountry == "itl"){
-                    $length = $palletObj->getItalyLength();
-                    $width = $palletObj->getItalyWidth();
-                    $tyreCount = $palletObj->getItalyQuantity();
-                }
-                elseif ($palletCountry == "usa"){
-                    $length = $palletObj->getUsaLength();
-                    $width = $palletObj->getUsaWidth();
-                    $tyreCount = $palletObj->getUsaQuantity();
-                }
+                if($palletObj !== null) {
+                    if ($palletCountry == "std") {
+                        $length = $palletObj->getStandardLength();
+                        $width = $palletObj->getStandardWidth();
+                        $tyreCount = $palletObj->getStandardQuantity();
+                    } elseif ($palletCountry == "itl") {
+                        $length = $palletObj->getItalyLength();
+                        $width = $palletObj->getItalyWidth();
+                        $tyreCount = $palletObj->getItalyQuantity();
+                    } elseif ($palletCountry == "usa") {
+                        $length = $palletObj->getUsaLength();
+                        $width = $palletObj->getUsaWidth();
+                        $tyreCount = $palletObj->getUsaQuantity();
+                    }
 //                var_dump($length);
 //                var_dump($tyreCount);
 //                var_dump($palletValue[$key]);
 //                exit;
-                if($palletValue[$key] == "1"){
-                    $tyreCount = (int) explode("&",$tyreCount)[1];
-                }else{
-                    $tyreCount = (int) explode("&",$tyreCount)[0];
-                }
-//                var_dump($tyreCount);
-                if($tyreCount !== 0) {
-                    for ($j = 0; $j < (int)$palletCount; $j++) {
-                        $packer->addItem(new TestItem($palletObj->getDescription()." ".$value->getName(), $length, $width, $height, 0, true));
+                    if ($palletValue[$key] == "1") {
+                        $tyreCount = (int)explode("&", $tyreCount)[1];
+                    } else {
+                        $tyreCount = (int)explode("&", $tyreCount)[0];
                     }
+//                var_dump($tyreCount);
+                    if ($tyreCount !== 0) {
+                        for ($j = 0; $j < (int)$palletCount; $j++) {
+                            $packer->addItem(new TestItem($palletObj->getDescription() . " " . $value->getName(), $length, $width, $height, 0, true));
+                        }
+                    }
+                }
+                else{
+                    $palletCount = 0;
                 }
 
                 for($i = 0;$i<((int)$quantity[$key]-((int)$palletCount*$tyreCount)) ;$i++)
@@ -372,7 +375,7 @@ class SiteController extends DefaultController
 //            $packedBox = $volumePacker->pack();
             /* $packedBox->getItems() contains the items that fit */
 
-
+            return $packedBoxes;
         }
 
     }

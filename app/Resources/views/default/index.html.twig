@@ -61,8 +61,8 @@
                         </div>
                         <div class="col-md-2 col-sm-6">
                             <select class="form-control input-sm valueType" name="palletValue[]">
-                                <option value="0">Lower</option>
-                                <option value="1">Upper</option>
+                                <option value="1">Lower</option>
+                                <option value="0">Upper</option>
                             </select>
                         </div>
 
@@ -103,7 +103,7 @@
            var htmlPallet = '<div class="col-md-2 col-sm-6"> <select  class="form-control input-sm palletItem " name="pallet[]"> <option value="1200">1200 x 800 </option> <option value="1000">1000 x 800</option> <option value="1016">40 x 40</option> <option value="812.8">32 x 32</option> </select></div>';
            var htmlCountry = '<div class="col-md-2 col-sm-6"> <select  class="form-control input-sm country " name="country[]"> <option value="std">Standard</option> <option value="itl">Italy</option> <option value="usa">USA</option> </select> </div>';
 
-           var htmlPalletValue = '<div class="col-md-2 col-sm-6"> <select class="form-control input-sm valueType" name="palletValue[]"> <option value="1">Upper</option> <option value="0">Lower</option> </select> </div>';
+           var htmlPalletValue = '<div class="col-md-2 col-sm-6"> <select class="form-control input-sm valueType" name="palletValue[]"> <option value="1">Lower</option> <option value="0">Upper</option> </select> </div>';
 
            var form = (htmlItem+htmlQuantity+htmlCountry+htmlPalletValue+'</div></div>');
            $('#forms').append(form);

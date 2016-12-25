@@ -290,7 +290,7 @@ class SiteController extends DefaultController
             $packer = new Packer();
 
             if($container == "20"){
-                $packer->addBox(new TestBox('20ft container', 2350, 5900, 2393, 0, 2350, 12036, 2392, 1));
+                $packer->addBox(new TestBox('20ft container', 2350, 5900, 2393, 0, 2350, 5900, 2393, 1));
             }
             elseif ($container == "40"){
                 $packer->addBox(new TestBox('40ft container', 2350, 12036, 2392, 0, 2350, 12036, 2392, 1));

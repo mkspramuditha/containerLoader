@@ -3,10 +3,16 @@
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}
+            <style>
+                .btn-label {position: relative;left: -12px;display: inline-block;padding: 6px 12px;background: rgba(0,0,0,0.15);border-radius: 3px 0 0 3px;}
+                .btn-labeled {padding-top: 0;padding-bottom: 0;}
+
+            </style>
         <link rel="icon" type="image/x-icon" href="{{ asset('icon.png') }}" />
         <link rel="stylesheet" href="{{ asset('assets/bootstrap/css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/select2/select201ef.css?1422823373') }}">
+        {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}

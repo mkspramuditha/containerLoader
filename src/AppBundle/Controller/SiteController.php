@@ -31,6 +31,8 @@ class SiteController extends DefaultController
         $orderItems = $request->get('items');
         $orderQuantities = $request->get('quantity');
         $palletCount = $request->get('palletQuanity');
+//        var_dump($palletCount);
+//        exit;
         $country = $request->get('country');
         $palletValue = $request->get('palletValue');
 
@@ -39,8 +41,23 @@ class SiteController extends DefaultController
 
 
         if($orderItems != null){
-            $packedBoxes = $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue);
+            $packedBoxes = $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue) ;
 
+            $test = clone $packedBoxes;
+            $itemInContainer = [];
+            foreach ($test as $row){
+                $itemsInTheBox = $row->getItems();
+                $countItems = [];
+                foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
+                    $countItems[] = $item->getDescription();
+                }
+                $array = array_count_values($countItems);
+                $temp = [];
+                foreach ($array as $key=>$value){
+                    $temp[$key] = $value;
+                }
+                $itemInContainer[] = $temp;
+            }
 
 //            $total = 0;
 //            foreach($orderItems as $key=>$value) {
@@ -57,7 +74,8 @@ class SiteController extends DefaultController
 //            $containerCount = ceil($total/(float)$size);
 
             return $this->render('default/result.html.twig',array(
-               'packedBoxes'=>$packedBoxes
+               'packedBoxes'=>$packedBoxes,
+                'items'=>$itemInContainer
             ));
         }
 
@@ -225,7 +243,7 @@ class SiteController extends DefaultController
 //        $packer->addItem(new TestItem('Item 3', 250, 250, 2, 200, true));
         $packedBoxes = $packer->pack();
 //
-        echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
+//        echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
 //        foreach ($packedBoxes as $packedBox) {
 //            $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
 //            echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
@@ -258,8 +276,8 @@ class SiteController extends DefaultController
 
     }
 
-    public function packing($items , $quantity, $palletCount, $country, $palletValue){
-
+    public function packing($items , $quantity, $palletCounts, $country, $palletValue){
+//        var_dump($palletCounts);
         $objectArray = [];
 
         if($items!== null){
@@ -283,7 +301,9 @@ class SiteController extends DefaultController
 
             foreach ($objectArray as $key=>$value){
                 $palletObj = $this->getRepository('TyrePallet')->findOneBy(array('tyre'=>$value->getName()));
-                $palletCount = $palletCount[$key];
+                $palletCount = $palletCounts[$key];
+//                var_dump($palletCounts);
+//                exit;
                 $palletCountry = $country[$key];
                 $length = 0;
                 $width = 0;
@@ -308,7 +328,12 @@ class SiteController extends DefaultController
 //                var_dump($palletValue[$key]);
 //                exit;
                     if ($palletValue[$key] == "1") {
-                        $tyreCount = (int)explode("&", $tyreCount)[1];
+                        if(count(explode("&", $tyreCount)) ==2) {
+                            $tyreCount = (int)explode("&", $tyreCount)[1];
+                        }
+                        else{
+                            $tyreCount = (int)explode("&", $tyreCount)[0];
+                        }
                     } else {
                         $tyreCount = (int)explode("&", $tyreCount)[0];
                     }
@@ -331,16 +356,21 @@ class SiteController extends DefaultController
             }
 
             $packedBoxes = $packer->pack();
-//
-            echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
-            foreach ($packedBoxes as $packedBox) {
-                echo("<br>");
-                $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
-                echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
-                echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
+//            $boxDetails = $packedBoxes;
+//            var_dump(count($packedBoxes));
+//            $test = $packer->pack();
+            $itemInContainer = [];
 
-                echo("The items in this box are:" . PHP_EOL);
-                echo("<br>");
+//            echo("These items fitted into " . count($packedBoxes) . " box(es)" . PHP_EOL);
+            /*
+            foreach ($boxDetails as $packedBox) {
+//                echo("<br>");
+                $boxType = $packedBox->getBox(); // your own box object, in this case TestBox
+//                echo("This box is a {$boxType->getReference()}, it is {$boxType->getOuterWidth()}mm wide, {$boxType->getOuterLength()}mm long and {$boxType->getOuterDepth()}mm high" . PHP_EOL);
+//                echo("The combined weight of this box and the items inside it is {$packedBox->getWeight()}g" . PHP_EOL);
+//
+//                echo("The items in this box are:" . PHP_EOL);
+//                echo("<br>");
                 $itemsInTheBox = $packedBox->getItems();
 //                var_dump(gettype($itemsInTheBox));
 //                exit;
@@ -350,31 +380,25 @@ class SiteController extends DefaultController
                 $countItems[] = $item->getDescription();
             }
             $array = array_count_values($countItems);
-
+            $temp = [];
             foreach ($array as $key=>$value){
-                echo($key . " - " . $value);
-                echo("<br>");
+                $temp[$key] = $value;
+//                echo($key . " - " . $value);
+//                echo("<br>");
             }
-
-
-                echo(PHP_EOL);
-                echo("<br>");
-            }
-
-
-
-
-//            $box = new TestBox('Le box', 300, 300, 10, 10, 296, 296, 8, 1000);
+            $itemInContainer[] = $temp;
 //
-//            $items = new ItemList();
-//            $items->insert(new TestItem('Item 1', 297, 296, 2, 200, true));
-//            $items->insert(new TestItem('Item 2', 297, 296, 2, 500, true));
-//            $items->insert(new TestItem('Item 3', 296, 296, 4, 290, true));
-//
-//            $volumePacker = new VolumePacker($box, $items);
-//            $packedBox = $volumePacker->pack();
-            /* $packedBox->getItems() contains the items that fit */
+//                echo(PHP_EOL);
+//                echo("<br>");
+            } */
 
+//            foreach ($boxDetails as $row){
+//
+//            }
+
+
+
+//            var_dump(count($boxDetails));
             return $packedBoxes;
         }
 

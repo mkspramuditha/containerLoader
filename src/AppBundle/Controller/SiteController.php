@@ -17,6 +17,7 @@ use PHPExcel_IOFactory;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class SiteController extends DefaultController
@@ -27,12 +28,12 @@ class SiteController extends DefaultController
      */
     public function indexAction(Request $request)
     {
+        set_time_limit(10000);
 
         $orderItems = $request->get('items');
         $orderQuantities = $request->get('quantity');
         $palletCount = $request->get('palletQuanity');
-//        var_dump($palletCount);
-//        exit;
+
         $country = $request->get('country');
         $palletValue = $request->get('palletValue');
 
@@ -45,12 +46,18 @@ class SiteController extends DefaultController
 
             $test = clone $packedBoxes;
             $itemInContainer = [];
+            $volumes = [];
             foreach ($test as $row){
                 $itemsInTheBox = $row->getItems();
                 $countItems = [];
-                foreach ($itemsInTheBox as $item) { // your own item object, in this case TestItem
+                $tempVolume = 0;
+                foreach ($itemsInTheBox as $item) {
+                    $tempVolume+= (int)$item->getWidth()*(int)$item->getLength()*(int)$item->getDepth();
                     $countItems[] = $item->getDescription();
                 }
+                $box = $row->getBox();
+                $volumeTemp = round(($tempVolume/($box->getOuterLength()*$box->getOuterWidth()*$box->getOuterDepth()))*100,2);
+                $volumes [] = (string)$volumeTemp." %  volume left -".(string) ((($box->getOuterLength()*$box->getOuterWidth()*$box->getOuterDepth()) - $tempVolume)/pow(10,9));
                 $array = array_count_values($countItems);
                 $temp = [];
                 foreach ($array as $key=>$value){
@@ -59,6 +66,7 @@ class SiteController extends DefaultController
                 $itemInContainer[] = $temp;
             }
 
+//            var_dump($volumes);
 //            $total = 0;
 //            foreach($orderItems as $key=>$value) {
 //                $total+= (float)$value * (float)$orderQuantities[$key];
@@ -75,7 +83,8 @@ class SiteController extends DefaultController
 
             return $this->render('default/result.html.twig',array(
                'packedBoxes'=>$packedBoxes,
-                'items'=>$itemInContainer
+                'items'=>$itemInContainer,
+                'volumes'=>$volumes
             ));
         }
 
@@ -277,12 +286,10 @@ class SiteController extends DefaultController
     }
 
     public function packing($items , $quantity, $palletCounts, $country, $palletValue,$container){
-//        var_dump($palletCounts);
         $objectArray = [];
 
         if($items!== null){
             foreach ($items as $key=>$value){
-//                var_dump($value);
                 $objectArray[] = $this->getRepository('Tyres')->findOneBy(array('name'=>$value));
             }
 
@@ -306,7 +313,7 @@ class SiteController extends DefaultController
                 $palletCountry = $country[$key];
                 $length = 0;
                 $width = 0;
-                $height = 1000;
+                $height = 1100;
                 $tyreCount = 0;
                 if($palletObj !== null) {
                     if ($palletCountry == "std") {

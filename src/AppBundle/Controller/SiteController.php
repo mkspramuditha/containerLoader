@@ -38,11 +38,13 @@ class SiteController extends DefaultController
         $palletValue = $request->get('palletValue');
 
         $containerSize = $request->get('container');
+        $containerWeight = $request->get('containerWeight');
+
 
 
 
         if($orderItems != null){
-            $packedBoxes = $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue,$containerSize) ;
+            $packedBoxes = $this->packing($orderItems,$orderQuantities, $palletCount,$country,$palletValue,$containerSize,$containerWeight) ;
 
             $test = clone $packedBoxes;
             $itemInContainer = [];
@@ -361,7 +363,7 @@ class SiteController extends DefaultController
 
     }
 
-    public function packing($items , $quantity, $palletCounts, $country, $palletValue,$container){
+    public function packing($items , $quantity, $palletCounts, $country, $palletValue,$container,$containerWeight){
         $objectArray = [];
 
         if($items!== null){
@@ -369,14 +371,13 @@ class SiteController extends DefaultController
                 $objectArray[] = $this->getRepository('Tyres')->findOneBy(array('name'=>$value));
             }
 
-
             $packer = new Packer();
 
             if($container == "20"){
-                $packer->addBox(new TestBox('20ft container', 2350, 5900, 2393, 0, 2350, 5900, 2393, 1));
+                $packer->addBox(new TestBox('20ft container', 2350, 5900, 2393, 0, 2350, 5900, 2393, ((float)$containerWeight)*1000));
             }
             elseif ($container == "40"){
-                $packer->addBox(new TestBox('40ft container', 2350, 12036, 2392, 0, 2350, 12036, 2392, 1));
+                $packer->addBox(new TestBox('40ft container', 2350, 12036, 2392, 0, 2350, 12036, 2392, ((float)$containerWeight)*1000));
 
             }
 
@@ -450,7 +451,7 @@ class SiteController extends DefaultController
 
                 for($i = 0;$i<((int)$quantity[$key]-((int)$palletCount*$tyreCount)) ;$i++)
                 {
-                    $packer->addItem(new TestItem($value->getName(),$value->getOd(),$value->getOd(),$value->getWidth(),0,true));
+                    $packer->addItem(new TestItem($value->getName(),$value->getOd(),$value->getOd(),$value->getWidth(),$value->getWeight(),true));
 
                 }
             }

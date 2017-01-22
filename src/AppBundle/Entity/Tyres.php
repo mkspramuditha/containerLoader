@@ -35,6 +35,27 @@ class Tyres
      */
     private $volume;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="weight", type="float", length=255)
+     */
+    private $weight;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="additionalWidth", type="float", length=255)
+     */
+    private $additionalWidth;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="additionalLength", type="float", length=255)
+     */
+    private $additionalLength;
+
 
     /**
      * @var string
@@ -156,5 +177,77 @@ class Tyres
     public function getWidth()
     {
         return $this->width;
+    }
+
+    /**
+     * Set weight
+     *
+     * @param float $weight
+     *
+     * @return Tyres
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * Get weight
+     *
+     * @return float
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * Set additionalWidth
+     *
+     * @param float $additionalWidth
+     *
+     * @return Tyres
+     */
+    public function setAdditionalWidth($additionalWidth)
+    {
+        $this->additionalWidth = $additionalWidth;
+
+        return $this;
+    }
+
+    /**
+     * Get additionalWidth
+     *
+     * @return float
+     */
+    public function getAdditionalWidth()
+    {
+        return $this->additionalWidth;
+    }
+
+    /**
+     * Set additionalLength
+     *
+     * @param float $additionalLength
+     *
+     * @return Tyres
+     */
+    public function setAdditionalLength($additionalLength)
+    {
+        $this->additionalLength = $additionalLength;
+
+        return $this;
+    }
+
+    /**
+     * Get additionalLength
+     *
+     * @return float
+     */
+    public function getAdditionalLength()
+    {
+        return $this->additionalLength;
     }
 }

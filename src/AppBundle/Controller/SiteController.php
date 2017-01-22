@@ -232,6 +232,82 @@ class SiteController extends DefaultController
         return new Response('Done Uploading');
     }
 
+
+    /**
+     * @Route("/excel/weight", name="uploadExcelWeights")
+     */
+
+    public function weightExcel(Request $request){
+        $inputFileName = ($this->get('kernel')->getRootDir() .'/../web/upload/weights.xlsx');;
+        try {
+            $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($inputFileName);
+        } catch(Exception $e) {
+            die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+        }
+
+        $sheet = $objPHPExcel->getSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+        $em = $this->getDoctrine()->getManager();
+
+
+        for ($row = 2; $row <= $highestRow; $row++){
+
+            $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE);
+
+            $tyre = $rowData[0][0];
+            $weight = $rowData[0][1];
+            $tyre = $this->getRepository('Tyres')->findOneBy(array('name'=>$tyre));
+            $tyre->setWeight($weight);
+            $em->persist($tyre);
+
+        }
+        $em->flush();
+        return new Response('Done Uploading');
+    }
+
+
+
+    /**
+     * @Route("/excel/additionalDim", name="uploadAdditionalDim")
+     */
+
+    public function additionalDimExcel(Request $request){
+        $inputFileName = ($this->get('kernel')->getRootDir() .'/../web/upload/additionalDim.xlsx');;
+        try {
+            $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objPHPExcel = $objReader->load($inputFileName);
+        } catch(Exception $e) {
+            die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+        }
+
+        $sheet = $objPHPExcel->getSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+        $em = $this->getDoctrine()->getManager();
+
+
+        for ($row = 2; $row <= $highestRow; $row++){
+
+            $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE);
+            $tyre = $rowData[0][0];
+            $length = $rowData[0][1];
+            $width = $rowData[0][2];
+            $tyre = $this->getRepository('Tyres')->findOneBy(array('name'=>$tyre));
+            $tyre->setAdditionalLength($length);
+            $tyre->setAdditionalWidth($width);
+            $em->persist($tyre);
+
+        }
+        $em->flush();
+        return new Response('Done Uploading');
+    }
+
+
+
     /**
      * @Route("/test", name="test")
      */
@@ -340,10 +416,31 @@ class SiteController extends DefaultController
                     } else {
                         $tyreCount = (int)explode("&", $tyreCount)[0];
                     }
+                    $extraLength = $value->getAdditionalLength();
+                    $extraWidth = $value->getAdditionalWidth();
+                    if($extraLength == 0){
+
+                    }
+                    elseif ($extraLength == 1){
+                       $length = $length*1.2;
+                    }
+                    else{
+                        $length = $extraLength;
+                    }
+
+                    if($extraWidth == 0){
+
+                    }
+                    elseif ($extraWidth == 1){
+                        $width = $width*1.2;
+                    }
+                    else{
+                        $width = $extraWidth;
+                    }
 
                     if ($tyreCount !== 0) {
                         for ($j = 0; $j < (int)$palletCount; $j++) {
-                            $packer->addItem(new TestItem("Pallet - " . $value->getName(), $length, $width, $height, 0, true));
+                            $packer->addItem(new TestItem("Pallet - " . $value->getName(), $length, $width, $height, 18, true));
                         }
                     }
                 }

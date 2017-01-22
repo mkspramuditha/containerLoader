@@ -343,7 +343,7 @@ class SiteController extends DefaultController
 
                     if ($tyreCount !== 0) {
                         for ($j = 0; $j < (int)$palletCount; $j++) {
-                            $packer->addItem(new TestItem($palletObj->getDescription() . " " . $value->getName(), $length, $width, $height, 0, true));
+                            $packer->addItem(new TestItem("Pallet - " . $value->getName(), $length, $width, $height, 0, true));
                         }
                     }
                 }

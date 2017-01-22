@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+    <div class="panel panel-success">
+    <div class="panel-heading">Add tyre</div>
+    <div class="panel-body">
+    {{ form_start(form,{'attr':{'class':'form'}}) }}
+
+    <div class="form-group">
+        {{ form_errors(form.name) }}
+        {{ form_label(form.name) }}
+        {{ form_widget(form.name,{'attr':{'class':'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_errors(form.od) }}
+        {{ form_label(form.od)}} (mm)
+        {{ form_widget(form.od,{'attr':{'class':'form-control'}}) }}
+
+    </div>
+    <div class="form-group">
+        {{ form_errors(form.width) }}
+        {{ form_label(form.width) }} (mm)
+        {{ form_widget(form.width,{'attr':{'class':'form-control'}}) }}
+
+    </div>
+    <div class="form-group">
+        {{ form_widget(form.save,{'attr':{'class':'btn ink-reaction btn-primary' }}) }}
+    </div>
+    {{ form_end(form) }}
+    </div>
+    </div>
+    </div>
+
+{% endblock %}

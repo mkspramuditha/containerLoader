@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="panel panel-success">
+            <div class="panel-heading">Add tyre</div>
+            <div class="panel-body">
+                {{ form_start(form,{'attr':{'class':'form'}}) }}
+
+                <div class="form-group">
+                    {{ form_errors(form.tyre) }}
+                    {{ form_label(form.tyre) }}
+                    {{ form_widget(form.tyre,{'attr':{'class':'form-control'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_errors(form.description) }}
+                    {{ form_label(form.description)}} (mm)
+                    {{ form_widget(form.description,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+                <div class="form-group">
+                    {{ form_errors(form.standardLength) }}
+                    {{ form_label(form.standardLength) }} (mm)
+                    {{ form_widget(form.standardLength,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.standardWidth) }}
+                    {{ form_label(form.standardWidth) }} (mm)
+                    {{ form_widget(form.standardWidth,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.standardQuantity) }}
+                    {{ form_label(form.standardQuantity) }}
+                    {{ form_widget(form.standardQuantity,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.italyLength) }}
+                    {{ form_label(form.italyLength) }} (mm)
+                    {{ form_widget(form.italyLength,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.italyWidth) }}
+                    {{ form_label(form.italyWidth) }} (mm)
+                    {{ form_widget(form.italyWidth,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.italyQuantity) }}
+                    {{ form_label(form.italyQuantity) }}
+                    {{ form_widget(form.italyQuantity,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.usaLength) }}
+                    {{ form_label(form.usaLength) }} (mm)
+                    {{ form_widget(form.usaLength,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.usaWidth) }}
+                    {{ form_label(form.usaWidth) }} (mm)
+                    {{ form_widget(form.usaWidth,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_errors(form.usaQuantity) }}
+                    {{ form_label(form.usaQuantity) }}
+                    {{ form_widget(form.usaQuantity,{'attr':{'class':'form-control'}}) }}
+
+                </div>
+
+                <div class="form-group">
+                    {{ form_widget(form.save,{'attr':{'class':'btn ink-reaction btn-primary' }}) }}
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
